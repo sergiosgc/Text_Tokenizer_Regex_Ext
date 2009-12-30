@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension name="Text_Tokenizer_Regex_Matcher_Ext" version="1.0.0">
+ <summary>Text_Tokenizer_Regex_Matcher_Ext is a regexp matcher to be used wit Text_Tokenizer_Regex</summary>
+ <description>Text_Tokenizer_Regex_Matcher_Ext performs just like the Text_Tokenizer_Regex_Matcher_Php bundled with Text_Tokenizer_Regex, only faster</description>
+ <maintainers>
+  <maintainer>
+   <user>sergiosgc</user>
+   <name>Sergio Carvalho</name>
+   <email>sergiosgc@pear.php.net</email>
+   <role>lead</role>
+  </maintainer>
+ </maintainers>
+ <license>PHP</license>
+ <channel>pear.sergiocarvalho.com</channel>
+ <release>
+  <version>1.0.0</version>
+  <date>2007-12-14</date>
+  <state>stable</state>
+  <notes>First public release</notes>
+ </release>
+ <deps language="C" platform="all">
+  <with defaults="/usr" name="pcre">
+   <lib name="pcre" />
+  </with>
+ </deps>
+ <code role="header" position="top">
+#include &lt;pcre.h&gt;
+typedef struct {
+    char* input;
+    char* cursor;
+} text_tokenizer_regex_matcher_ext_input;
+struct text_tokenizer_regex_matcher_ext_regex_item_struct {
+    pcre* regex;
+    struct text_tokenizer_regex_matcher_ext_regex_item_struct* next;
+};
+typedef struct text_tokenizer_regex_matcher_ext_regex_item_struct text_tokenizer_regex_matcher_ext_regex_item;
+typedef struct {
+    text_tokenizer_regex_matcher_ext_regex_item* first;
+    text_tokenizer_regex_matcher_ext_regex_item* last;
+} text_tokenizer_regex_matcher_ext_regex_list;
+
+ </code>
+ <class name="Text_Tokenizer_Regex_Matcher_Ext">
+  <property name="selectionCriteria" type="int" access="protected" value="1"/>
+  <property name="input" type="string" access="protected" value=""/>
+  <function name="setInput" access="public">
+   <proto>void setInput(string value)</proto>
+   <code>
+zval* zinput;
+zinput = zend_read_property(_this_ce, _this_zval, "input", strlen("input"), 1);
+if (Z_TYPE_P(zinput) == IS_RESOURCE) { /* Free previous value if existent */
+    efree((void*) ((text_tokenizer_regex_matcher_ext_input*) Z_RESVAL_P(zinput))->input );
+    efree((void*) Z_RESVAL_P(zinput));
+    zval_ptr_dtor(&amp;zinput);
+}
+
+/* Store new value */
+text_tokenizer_regex_matcher_ext_input* newVal;
+newVal = emalloc(sizeof(text_tokenizer_regex_matcher_ext_input));
+newVal->input = newVal->cursor = (char*) emalloc(strlen(value) + 1);
+strncpy(newVal->input, value, strlen(value));
+newVal->input[strlen(value)] = 0;
+ZVAL_RESOURCE(zinput, (long) newVal);
+   </code>
+  </function>
+  <function name="setSelectionCriteria" access="public">
+   <proto>void setSelectionCriteria(int selectionCriteria)</proto>
+   <code>
+zval* attribute;
+attribute = zend_read_property(_this_ce, _this_zval, "selectionCriteria", strlen("selectionCriteria"), 1);
+ZVAL_LONG(attribute, selectionCriteria);
+   </code>
+  </function>
+  <function name="addRegex" access="public">
+   <proto>void addRegex(string regex)</proto>
+   <code>
+if (strlen(regex) &lt; 3) {
+    php_error(E_ERROR, "Regular expression has no terminator characters"); RETURN_FALSE;
+    RETURN_FALSE;
+}
+
+char* pcreRegex;
+text_tokenizer_regex_matcher_ext_regex_item* newItem;
+int pcreCompileError;
+int pcreCompileErrorOffset;
+
+pcreRegex = (char*) emalloc(sizeof(char) * (2 + strlen(regex)));
+pcreRegex += 1;
+strcpy(pcreRegex, regex);
+pcreRegex[strlen(pcreRegex) - 1] = ')';
+pcreRegex -= 1;
+pcreRegex[0] = '^';
+pcreRegex[1] = '(';
+
+newItem = (text_tokenizer_regex_matcher_ext_regex_item*) emalloc(sizeof(text_tokenizer_regex_matcher_ext_regex_item));
+newItem->next = NULL;
+newItem->regex = pcre_compile(pcreRegex, 0, &amp;pcreCompileError, &amp;pcreCompileErrorOffset, NULL);
+efree(pcreRegex);
+
+if (newItem->regex == NULL) {
+    php_error(E_ERROR, "Regular expression compilation failed"); RETURN_FALSE;
+    RETURN_FALSE;
+}
+
+zval* attribute;
+attribute = zend_read_property(_this_ce, _this_zval, "regexQueue", strlen("regexQueue"), 1);
+if (Z_TYPE_P(attribute) == IS_NULL) { 
+    text_tokenizer_regex_matcher_ext_regex_list* list;
+    list = emalloc(sizeof(text_tokenizer_regex_matcher_ext_regex_list));
+    list->first = list->last = newItem;
+    ZVAL_RESOURCE(attribute, (long) list);
+} else {
+    text_tokenizer_regex_matcher_ext_regex_list* list;
+    list = (text_tokenizer_regex_matcher_ext_regex_list*) Z_RESVAL_P(attribute);
+    list->last->next = newItem;
+    list->last = newItem;
+}
+</code>
+  </function>
+  <function name="match" access="public">
+   <proto>array match()</proto>
+   <code>
+zval* regexQueue;
+regexQueue = zend_read_property(_this_ce, _this_zval, "regexQueue", strlen("regexQueue"), 1);
+if (Z_TYPE_P(regexQueue) == IS_NULL) { 
+    RETURN_FALSE;
+}
+text_tokenizer_regex_matcher_ext_regex_item* item;
+item = ((text_tokenizer_regex_matcher_ext_regex_list*) Z_RESVAL_P(regexQueue))->first;
+
+zval* inputResource;
+inputResource = zend_read_property(_this_ce, _this_zval, "input", strlen("input"), 1);
+if (Z_TYPE_P(inputResource) != IS_RESOURCE) { 
+    RETURN_FALSE;
+}
+char* input = ((text_tokenizer_regex_matcher_ext_input*) Z_RESVAL_P(inputResource))->cursor;
+
+zval* selectionCriteriaResource;
+selectionCriteriaResource = zend_read_property(_this_ce, _this_zval, "selectionCriteria", strlen("selectionCriteria"), 1);
+if (Z_TYPE_P(selectionCriteriaResource) != IS_LONG) { 
+    RETURN_FALSE;
+}
+int selectionCriteria = Z_LVAL_P(selectionCriteriaResource);
+
+
+int index = 0;
+int longestMatchIndex = -1;
+int longestMatchLength = -1;
+while ( item 
+       &amp;&amp; 
+        ((selectionCriteria == 2)
+         ||
+         (selectionCriteria == 1 &amp;&amp; longestMatchIndex == -1)
+        ) 
+      ) 
+{
+    int ovector[3];
+    int rc;
+    rc = pcre_exec(item->regex, NULL, input, strlen(input), 0, 0, (int*) &amp;ovector, 3);
+    if (rc >= 0 &amp;&amp; (ovector[1] - ovector[0] > longestMatchLength)) {
+        longestMatchLength = ovector[1] - ovector[0];
+        longestMatchIndex = index;
+    }
+    item = item->next;
+    index++;
+}
+if (longestMatchIndex == -1) {
+    RETURN_FALSE;
+}
+char* result;
+result = (char*) emalloc(sizeof(char) * (1 + longestMatchLength));
+strncpy(result, input, longestMatchLength);
+result[longestMatchLength] = 0;
+
+array_init(return_value);
+add_assoc_long(return_value, "index", longestMatchIndex);
+add_assoc_string(return_value, "value", result, 0);
+   </code>
+  </function>
+  <function name="consume" access="public">
+   <proto>void consume(int howMuch)</proto>
+   <code>
+zval* zinput;
+zinput = zend_read_property(_this_ce, _this_zval, "input", strlen("input"), 1);
+if (Z_TYPE_P(zinput) == IS_RESOURCE) { 
+    ((text_tokenizer_regex_matcher_ext_input*) Z_RESVAL_P(zinput))->cursor += howMuch;
+}
+   </code>
+  </function>
+ </class>
+ <test name="Text_Tokenizer_Regex_Matcher_Ext__addRegex">
+<code>
+dl('Text_Tokenizer_Regex_Matcher_Ext.so');
+$a = new Text_Tokenizer_Regex_Matcher_Ext();
+var_dump($a->addRegex('xpto'));
+</code>
+ </test>
+</extension>

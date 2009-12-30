@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0"
+    xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+
+  <name>Text_Tokenizer_Regex_Matcher_Ext</name>
+  <channel>pear.sergiocarvalho.com</channel>
+
+  <summary>Text_Tokenizer_Regex_Matcher_Ext is a regexp matcher to be used wit Text_Tokenizer_Regex</summary>
+
+  <description>
+Text_Tokenizer_Regex_Matcher_Ext performs just like the Text_Tokenizer_Regex_Matcher_Php bundled with Text_Tokenizer_Regex, only faster
+  </description>
+
+  <lead>
+    <name>Sergio Carvalho</name>
+    <user>sergiosgc</user>
+    <email>sergiosgc@pear.php.net</email>
+    <active>yes</active>
+  </lead>
+
+  <date>2007-12-14</date>
+  <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
+  </version>
+  <stability>
+    <release>stable</release>
+    <api>stable</api>
+  </stability>
+
+  <license uri="http://php.net/license" filesource="LICENSE">PHP</license>
+
+  <notes>
+First public release
+  </notes>
+
+  <contents>
+    <dir name="/">
+      <file role='doc' name='CREDITS'/>
+      <file role='src' name='config.m4'/>
+      <file role='src' name='Text_Tokenizer_Regex_Matcher_Ext.dsp'/>
+      <file role='src' name='config.w32'/>
+      <file role='src' name='Text_Tokenizer_Regex_Matcher_Ext.c'/>
+      <file role='src' name='php_Text_Tokenizer_Regex_Matcher_Ext.h'/>
+      <dir name="tests">
+        <file role='test' name='Text_Tokenizer_Regex_Matcher_Ext__setInput.phpt'/>
+        <file role='test' name='Text_Tokenizer_Regex_Matcher_Ext__setSelectionCriteria.phpt'/>
+        <file role='test' name='Text_Tokenizer_Regex_Matcher_Ext__addRegex.phpt'/>
+        <file role='test' name='Text_Tokenizer_Regex_Matcher_Ext__match.phpt'/>
+        <file role='test' name='Text_Tokenizer_Regex_Matcher_Ext__consume.phpt'/>
+      </dir>
+    </dir>
+  </contents>
+
+  <dependencies>
+    <required>
+      <php>
+        <min>5.0.0</min>
+      </php>
+      <pearinstaller>
+        <min>1.4.0a1</min>
+      </pearinstaller>
+    </required>
+  </dependencies>
+
+  <providesextension>Text_Tokenizer_Regex_Matcher_Ext</providesextension>
+
+  <extsrcrelease>
+   <configureoption name="with-pcre" default="autodetect" prompt="pcre installation directory?" />
+  </extsrcrelease>
+
+</package>

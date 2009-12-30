@@ -1,0 +1,8 @@
+Text_Tokenizer_Regex_Matcher_Ext.lo: /home/sergio/Projects/Personal/Software.toReview/parserv2/Text_Tokenizer_Regex_Matcher_Ext/Text_Tokenizer_Regex_Matcher_Ext/Text_Tokenizer_Regex_Matcher_Ext.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/home/sergio/Projects/Personal/Software.toReview/parserv2/Text_Tokenizer_Regex_Matcher_Ext/Text_Tokenizer_Regex_Matcher_Ext $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /home/sergio/Projects/Personal/Software.toReview/parserv2/Text_Tokenizer_Regex_Matcher_Ext/Text_Tokenizer_Regex_Matcher_Ext/Text_Tokenizer_Regex_Matcher_Ext.c -o Text_Tokenizer_Regex_Matcher_Ext.lo 
+$(phplibdir)/Text_Tokenizer_Regex_Matcher_Ext.la: ./Text_Tokenizer_Regex_Matcher_Ext.la
+	$(LIBTOOL) --mode=install cp ./Text_Tokenizer_Regex_Matcher_Ext.la $(phplibdir)
+
+./Text_Tokenizer_Regex_Matcher_Ext.la: $(shared_objects_Text_Tokenizer_Regex_Matcher_Ext) $(TEXT_TOKENIZER_REGEX_MATCHER_EXT_SHARED_DEPENDENCIES)
+	$(LIBTOOL) --mode=link $(CC) $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@ -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_Text_Tokenizer_Regex_Matcher_Ext) $(TEXT_TOKENIZER_REGEX_MATCHER_EXT_SHARED_LIBADD)
+

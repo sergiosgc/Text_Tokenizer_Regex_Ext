@@ -1,0 +1,8 @@
+// $ Id: $
+// vim:ft=javascript
+
+ARG_ENABLE('Text_Tokenizer_Regex_Matcher_Ext' , 'Text_Tokenizer_Regex_Matcher_Ext is a regexp matcher to be used wit Text_Tokenizer_Regex', 'no');
+if (PHP_TEXT_TOKENIZER_REGEX_MATCHER_EXT == "yes") {
+  EXTENSION("Text_Tokenizer_Regex_Matcher_Ext", "Text_Tokenizer_Regex_Matcher_Ext.c");
+  AC_DEFINE("HAVE_TEXT_TOKENIZER_REGEX_MATCHER_EXT", 1, "Text_Tokenizer_Regex_Matcher_Ext support");
+}

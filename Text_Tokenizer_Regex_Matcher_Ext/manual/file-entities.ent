@@ -1,0 +1,3 @@
+<!ENTITY reference.Text-Tokenizer-Regex-Matcher-Ext.reference SYSTEM './Text-Tokenizer-Regex-Matcher-Ext/reference.xml'>
+<!ENTITY reference.Text-Tokenizer-Regex-Matcher-Ext.configure SYSTEM './Text-Tokenizer-Regex-Matcher-Ext/configure.xml'>
+<!ENTITY reference.Text-Tokenizer-Regex-Matcher-Ext.functions SYSTEM './functions.xml'>
